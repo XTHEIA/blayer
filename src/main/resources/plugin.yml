@@ -1,0 +1,10 @@
+name: Blayer
+version: '${version}'
+main: kr.sbxt.xtheia.theia.blayer.Blayer
+api-version: 1.19
+depend:
+  - Ink
+commands:
+  Blayer :
+    description: d
+    usage: /<command> <filename> <operation>
