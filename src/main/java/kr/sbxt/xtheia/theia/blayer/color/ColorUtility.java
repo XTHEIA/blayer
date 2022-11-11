@@ -1,9 +1,6 @@
 package kr.sbxt.xtheia.theia.blayer.color;
 
-import kr.sbxt.xtheia.theia.ink.color.RGB;
 import org.bukkit.Material;
-
-import java.awt.image.BufferedImage;
 
 public final class ColorUtility
 {
@@ -66,9 +63,4 @@ public final class ColorUtility
 			new MaterialColor(Material.PACKED_ICE, 200, 219, 253),
 			new MaterialColor(Material.PRISMARINE_BRICKS, 168, 203, 192),
 	};
-	
-
-	
-	
-	// TODO https://www.youtube.com/watch?v=FyjFEsYJwzw
 }

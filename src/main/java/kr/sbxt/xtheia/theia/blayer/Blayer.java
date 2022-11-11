@@ -1,14 +1,7 @@
 package kr.sbxt.xtheia.theia.blayer;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.RespawnAnchor;
+import kr.sbxt.xtheia.theia.blayer.command.CommandBlayer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jcodec.api.FrameGrab;
-import org.jcodec.scale.AWTUtil;
-
-import java.io.File;
 
 public final class Blayer extends JavaPlugin
 {
@@ -17,9 +10,6 @@ public final class Blayer extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		final var logger = getLogger();
-		getServer().getPluginManager().registerEvents(new ServerEventListener(), this);
-		
 		getCommand("blayer").setExecutor(CommandBlayer.INSTANCE);
 		getCommand("blayer").setTabCompleter(CommandBlayer.INSTANCE);
 		Plugin = this;

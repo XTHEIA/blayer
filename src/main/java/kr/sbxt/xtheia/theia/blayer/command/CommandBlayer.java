@@ -1,5 +1,6 @@
-package kr.sbxt.xtheia.theia.blayer;
+package kr.sbxt.xtheia.theia.blayer.command;
 
+import kr.sbxt.xtheia.theia.blayer.Blayer;
 import kr.sbxt.xtheia.theia.blayer.color.ColorUtility;
 import kr.sbxt.xtheia.theia.ink.Ink;
 import org.bukkit.Bukkit;
@@ -31,7 +32,6 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 	
 	final static int delay = 0;
 	final static int interval = 1;
-	final static int startX = 4000, Y = 200, startZ = 4000;
 	private static final String dataFolderPath = "C:\\library\\minecraft\\server\\THEIA\\videos";
 	//
 	private static final String DELI_FRAMES = "_F_", DELI_PIXELS = ";";
@@ -50,7 +50,6 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				return Bukkit.createBlockData(ColorUtility.getNearestNamedColor(rgb.r(), rgb.g(), rgb.b()).getMaterial());
 			};
 	//
-	final static private Function<Integer, BlockData> colorParser = converter_color;
 	final static private ArrayList<Map<Location, BlockData>> renderData = new ArrayList<>();
 	
 	private static File getDataFile_color(String sourceName)
@@ -189,6 +188,10 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				if (sender instanceof Player player)
 				{
 					final var world = player.getWorld();
+					final var location = player.getLocation();
+					final var startX = location.getX();
+					final var startZ = location.getZ();
+					final var Y = location.getY() - 1;
 					try
 					{
 						Ink.log("loading render data ...");
@@ -226,7 +229,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				
 				
 			}
-			case "play" ->
+			case "_play" ->
 			{
 				if (sender instanceof Player player)
 				{
@@ -247,6 +250,10 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				if (sender instanceof Player player)
 				{
 					final var world = player.getWorld();
+					final var location = player.getLocation();
+					final var startX = location.getX();
+					final var startZ = location.getZ();
+					final var Y = location.getY() - 1;
 					try
 					{
 						final var dataFile_block = getDataFile_blockData(sourceName);
@@ -295,7 +302,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 		return switch (args.length)
 				{
 					case 1 -> Arrays.stream(sourcesFolder.listFiles(f -> ! f.getName().endsWith(".txt"))).map(f -> f.getName()).toList();
-					case 2 -> List.of("map", "convert", "load", "play", "instant_play");
+					case 2 -> List.of("map", "convert", "load", "play_loaded", "instant_play");
 					default -> List.of("N/A");
 				};
 	}

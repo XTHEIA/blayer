@@ -1,4 +1,4 @@
-package kr.sbxt.xtheia.theia.blayer;
+package kr.sbxt.xtheia.theia.blayer.image;
 
 import org.jcodec.common.Vector2Int;
 
