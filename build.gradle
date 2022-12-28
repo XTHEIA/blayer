@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly "io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT"
     implementation 'org.jcodec:jcodec:0.2.5'
     implementation 'org.jcodec:jcodec-javase:0.2.5'
     compileOnly files('C:/library/project/ink/build/libs/ink-0.0-all.jar')
@@ -27,6 +27,9 @@ dependencies {
 
 def targetJavaVersion = 17
 java {
+
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion

@@ -2,7 +2,7 @@ name: Blayer
 version: '${version}'
 main: kr.sbxt.xtheia.theia.blayer.Blayer
 api-version: 1.19
-depend:
+softdepend:
   - Ink
 commands:
   Blayer :

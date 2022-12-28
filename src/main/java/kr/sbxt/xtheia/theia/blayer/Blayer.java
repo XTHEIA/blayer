@@ -1,6 +1,7 @@
 package kr.sbxt.xtheia.theia.blayer;
 
 import kr.sbxt.xtheia.theia.blayer.command.CommandBlayer;
+import kr.sbxt.xtheia.theia.ink.Ink;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Blayer extends JavaPlugin
@@ -13,6 +14,7 @@ public final class Blayer extends JavaPlugin
 		getCommand("blayer").setExecutor(CommandBlayer.INSTANCE);
 		getCommand("blayer").setTabCompleter(CommandBlayer.INSTANCE);
 		Plugin = this;
+		Ink.logPluginLoaded(this);
 	}
 	
 	@Override
