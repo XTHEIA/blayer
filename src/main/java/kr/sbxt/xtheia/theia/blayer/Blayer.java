@@ -11,9 +11,9 @@ public final class Blayer extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		Plugin = this;
 		getCommand("blayer").setExecutor(CommandBlayer.INSTANCE);
 		getCommand("blayer").setTabCompleter(CommandBlayer.INSTANCE);
-		Plugin = this;
 		Ink.logPluginLoaded(this);
 	}
 	

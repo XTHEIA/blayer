@@ -32,7 +32,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 	
 	final static int delay = 0;
 	final static int interval = 1;
-	private static final String dataFolderPath = "C:\\library\\minecraft\\server\\THEIA\\videos";
+	private static final String dataFolderPath = Blayer.Plugin.getDataFolder().getAbsolutePath() + "\\videos";
 	//
 	private static final String DELI_FRAMES = "_F_", DELI_PIXELS = ";";
 	//
@@ -62,6 +62,20 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 		return new File(dataFolderPath, "%s_blocks.txt".formatted(sourceName));
 	}
 	
+	private static final String
+			// must use lower case!
+			STEP_1_MAP = "1_map_color",
+			STEP_2_CONVERT = "2_map_blocks",
+			STEP_3_PLAY = "3_play";
+	
+	static
+	{
+		if (! sourcesFolder.exists())
+		{
+			sourcesFolder.mkdirs();
+		}
+	}
+	
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
 	{
@@ -76,7 +90,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 		
 		switch (args[1].toLowerCase())
 		{
-			case "map" ->
+			case STEP_1_MAP ->
 			{
 				try
 				{
@@ -142,7 +156,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				}
 				
 			}
-			case "convert" ->
+			case STEP_2_CONVERT ->
 			{
 				try
 				{
@@ -183,69 +197,7 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 					return false;
 				}
 			}
-			case "load" ->
-			{
-				if (sender instanceof Player player)
-				{
-					final var world = player.getWorld();
-					final var location = player.getLocation();
-					final var startX = location.getX();
-					final var startZ = location.getZ();
-					final var Y = location.getY() - 1;
-					try
-					{
-						Ink.log("loading render data ...");
-						final var dataFile_block = getDataFile_blockData(sourceName);
-						final var blockReader = new Scanner(dataFile_block).useDelimiter(DELI_FRAMES);
-						Bukkit.getScheduler().runTaskAsynchronously(Blayer.Plugin, () ->
-						{
-							renderData.clear();
-							int i = 0;
-							while (blockReader.hasNext())
-							{
-								final var frameData = blockReader.next().replace(DELI_FRAMES, "");
-								final var pixels = frameData.split(DELI_PIXELS);
-								final var map = new LinkedHashMap<Location, BlockData>();
-								for (final String pixel : pixels)
-								{
-									final var data = pixel.split("\\^"); // 0,0 --- 0
-									final var coords = data[0].split(",");
-									
-									final var blockData = Bukkit.createBlockData(data[1]);
-									map.put(new Location(world, startX + Integer.parseInt(coords[0]), Y, startZ + Integer.parseInt(coords[1])), blockData);
-								}
-								Ink.log("loading frame " + i++);
-								renderData.add(map);
-							}
-							blockReader.close();
-							Ink.log("loading finished!");
-						});
-						return true;
-					} catch (Exception e)
-					{
-						return false;
-					}
-				}
-				
-				
-			}
-			case "_play" ->
-			{
-				if (sender instanceof Player player)
-				{
-					final AtomicInteger a = new AtomicInteger(0);
-					final var repeatTask = Bukkit.getScheduler().runTaskTimer(Blayer.Plugin, () ->
-					{
-						final var aVal = a.getAndAdd(1);
-						player.sendMultiBlockChange(renderData.get(aVal));
-						Ink.log("sent frame " + aVal);
-					}, delay, interval);
-					Bukkit.getScheduler().runTaskLater(Blayer.Plugin, () -> repeatTask.cancel(), renderData.size() * interval + delay);
-					return true;
-				}
-				
-			}
-			case "instant_play" ->
+			case STEP_3_PLAY ->
 			{
 				if (sender instanceof Player player)
 				{
@@ -292,6 +244,69 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 				}
 				
 			}
+			
+			case "_preload" ->
+			{
+				if (sender instanceof Player player)
+				{
+					final var world = player.getWorld();
+					final var location = player.getLocation();
+					final var startX = location.getX();
+					final var startZ = location.getZ();
+					final var Y = location.getY() - 1;
+					try
+					{
+						Ink.log("loading render data ...");
+						final var dataFile_block = getDataFile_blockData(sourceName);
+						final var blockReader = new Scanner(dataFile_block).useDelimiter(DELI_FRAMES);
+						Bukkit.getScheduler().runTaskAsynchronously(Blayer.Plugin, () ->
+						{
+							renderData.clear();
+							int i = 0;
+							while (blockReader.hasNext())
+							{
+								final var frameData = blockReader.next().replace(DELI_FRAMES, "");
+								final var pixels = frameData.split(DELI_PIXELS);
+								final var map = new LinkedHashMap<Location, BlockData>();
+								for (final String pixel : pixels)
+								{
+									final var data = pixel.split("\\^"); // 0,0 --- 0
+									final var coords = data[0].split(",");
+									
+									final var blockData = Bukkit.createBlockData(data[1]);
+									map.put(new Location(world, startX + Integer.parseInt(coords[0]), Y, startZ + Integer.parseInt(coords[1])), blockData);
+								}
+								Ink.log("loading frame " + i++);
+								renderData.add(map);
+							}
+							blockReader.close();
+							Ink.log("loading finished!");
+						});
+						return true;
+					} catch (Exception e)
+					{
+						return false;
+					}
+				}
+				
+				
+			}
+			case "_playloaded" ->
+			{
+				if (sender instanceof Player player)
+				{
+					final AtomicInteger a = new AtomicInteger(0);
+					final var repeatTask = Bukkit.getScheduler().runTaskTimer(Blayer.Plugin, () ->
+					{
+						final var aVal = a.getAndAdd(1);
+						player.sendMultiBlockChange(renderData.get(aVal));
+						Ink.log("sent frame " + aVal);
+					}, delay, interval);
+					Bukkit.getScheduler().runTaskLater(Blayer.Plugin, () -> repeatTask.cancel(), renderData.size() * interval + delay);
+					return true;
+				}
+				
+			}
 		}
 		return false;
 	}
@@ -299,11 +314,22 @@ public final class CommandBlayer implements CommandExecutor, TabCompleter
 	@Override
 	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
 	{
-		return switch (args.length)
+		switch (args.length)
+		{
+			case 1:
+				final var txtFiles = sourcesFolder.listFiles(f -> ! f.getName().endsWith(".txt"));
+				if (txtFiles == null)
 				{
-					case 1 -> Arrays.stream(sourcesFolder.listFiles(f -> ! f.getName().endsWith(".txt"))).map(f -> f.getName()).toList();
-					case 2 -> List.of("map", "convert", "load", "play_loaded", "instant_play");
-					default -> List.of("N/A");
-				};
+					return List.of("no txt file found!");
+				}
+				return Arrays.stream(txtFiles).map(File::getName).toList();
+			case 2:
+				return List.of(
+						STEP_1_MAP, STEP_2_CONVERT, STEP_3_PLAY
+						//,"_preload", "_playloaded"
+				);
+			default:
+				return List.of("N/A");
+		}
 	}
 }

@@ -13,7 +13,6 @@ public class MaterialColor
 		this.r = r;
 		this.g = g;
 		this.b = b;
-		
 	}
 	
 	public Material getMaterial()
