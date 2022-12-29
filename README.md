@@ -16,7 +16,8 @@ blayer supports minecraft `1.19.x`.
 
 ## Dependencies
 
-[ink](https://github.com/XTHEIA/ink) is required.
+[ink](https://github.com/XTHEIA/ink) is required as plugin.  
+but it is not public, so `ink-1.0.jar` is included in release file.
 
 ## Usage
 
