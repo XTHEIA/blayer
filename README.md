@@ -7,7 +7,6 @@ blayer uses [jcodec](https://github.com/jcodec/jcodec) for capturing frames.
 
 <img src="https://github.com/sbkimxtheia/blayer/blob/master/preview.gif" width="480" height="270" alt="">
 
-### Please feel free to request such as adding features and fixing bugs.
 
 ## Supported Versions
 
